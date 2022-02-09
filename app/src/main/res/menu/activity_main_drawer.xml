@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single" android:id="@+id/gr1">
+        <item
+            android:id="@+id/dashboard01"
+            android:checked="true"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Tablero simple" />
+        <item
+            android:id="@+id/dashboard02"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Tablero para asamblea" />
+        <item
+            android:id="@+id/dashboard03"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Tablero para Yasine" />
+        <item
+            android:id="@+id/dashboard04"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Tablero para Yasine" />
+        <item
+            android:id="@+id/nav_phrase_mode"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Añadir tablero" />
+    </group>
+
+    <group android:checkableBehavior="single" android:id="@+id/gr2">
+        <item
+            android:id="@+id/picto_management"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Administración de pictogramas" />
+        <item
+            android:id="@+id/Ajustes"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Ajustes" />
+    </group>
+</menu>

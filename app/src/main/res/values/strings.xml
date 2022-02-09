@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">¡Habla!</string>
+    <string name="navigation_drawer_open">Abrir cajón</string>
+    <string name="navigation_drawer_close">Cerrar cajón</string>
+    <string name="nav_header_title">¡Habla!</string>
+    <string name="nav_header_subtitle">CEE Pilar Soubrier</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Configuración</string>
+
+    <string name="word_mode">Uso simple</string>
+    <string name="phrase_mode">Creación de frases</string>
+    <string name="grid_narrower">-</string>
+    <string name="grid_wider">+</string>
+</resources>
