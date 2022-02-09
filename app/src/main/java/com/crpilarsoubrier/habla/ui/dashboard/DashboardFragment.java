@@ -1,9 +1,11 @@
 package com.crpilarsoubrier.habla.ui.dashboard;
 
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,10 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.crpilarsoubrier.habla.R;
 import com.crpilarsoubrier.habla.data.PictoViewModel;
 
-public class GalleryFragment extends Fragment {
+import java.util.Locale;
+
+public class DashboardFragment extends Fragment {
 
 
-    private static final String TAG = "GalleryFragment";
+    private static final String TAG = "DashboardFragment";
     //private GalleryViewModel galleryViewModel;
     //protected RecyclerView mPictoRecyclerView;
     //protected PictoRecyclerViewAdapter mPictoAdapter;
@@ -30,10 +34,19 @@ public class GalleryFragment extends Fragment {
     private PictoViewModel fixedPictosViewModel;
     private PictoViewModel mainPictosViewModel;
 
+    static private TextToSpeech textToSpeechEngine = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        textToSpeechEngine = new TextToSpeech(this.getContext(), new TextToSpeech.OnInitListener(){
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    textToSpeechEngine.setLanguage(new Locale("spa", "ESP"));
+                }
+            }
+        });
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -82,6 +95,18 @@ public class GalleryFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    static public void readPicto(View v) {
+        TextView tv = (TextView) v;
+        String toSpeak = tv.getText().toString();
+        textToSpeechEngine.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+    }
+    
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        textToSpeechEngine.shutdown();;
     }
 
 }
