@@ -1,6 +1,7 @@
 package com.crpilarsoubrier.habla.data;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -21,7 +22,16 @@ public interface PictoDao {
     @Query("DELETE FROM picto")
     void deleteAll();
 
-    @Query("SELECT * FROM picto ORDER BY id ASC")
+    @Query("SELECT * FROM picto ORDER BY text ASC")
     LiveData<List<Picto>> getAll();
+
+    @Query("SELECT * FROM picto WHERE parent_picto_id = :parentId")
+    LiveData<List<Picto>> getPictosByParentId(Long parentId);
+
+    @Query("SELECT * FROM picto WHERE picto_id = :pictoId")
+    Picto getPictoById(long pictoId);
+
+    @Query("DELETE FROM picto WHERE picto_id = :pictoId")
+    void delete(long pictoId);
 
 }

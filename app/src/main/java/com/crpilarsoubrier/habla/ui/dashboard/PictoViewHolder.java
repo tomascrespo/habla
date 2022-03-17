@@ -30,7 +30,8 @@ class PictoViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Picto picto, Context context) {
-        pictoTextItemView.setText(picto.text);
+        pictoTextItemView.setText(picto.pictoId + " " + picto.text + " (" + picto.parentId + ")");
+        String textToRead = picto.text;
         //File picFile = new File(picto.picFilePath);
         File picFile =  new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), ALBUM_NAME + "/" + picto.picFilePath);
         if (picFile.exists()) {
@@ -39,6 +40,25 @@ class PictoViewHolder extends RecyclerView.ViewHolder {
         } else {
             Log.e("viewholder", picto.picFilePath + " doesn't exists");
         }
+
+        // If dashboard is configured to not showing text we should
+        // do textview picto_text visibility := gone
+
+        pictoImageItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DashboardFragment.readText(textToRead, v.getContext());
+                //DashboardFragment.readPicto(v);
+            }
+        });
+
+        pictoTextItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DashboardFragment.readText(textToRead, v.getContext());
+                //DashboardFragment.readPicto(v);
+            }
+        });
 
     }
 

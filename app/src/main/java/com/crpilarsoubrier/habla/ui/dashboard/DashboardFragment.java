@@ -1,22 +1,31 @@
 package com.crpilarsoubrier.habla.ui.dashboard;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.crpilarsoubrier.habla.R;
+import com.crpilarsoubrier.habla.data.Picto;
 import com.crpilarsoubrier.habla.data.PictoViewModel;
 
+import java.util.List;
 import java.util.Locale;
 
 public class DashboardFragment extends Fragment {
@@ -28,7 +37,7 @@ public class DashboardFragment extends Fragment {
     //protected PictoRecyclerViewAdapter mPictoAdapter;
     //protected RecyclerView.LayoutManager mLayoutManager;
     //protected String[] mDataset;
-    private static final int FIXED_SPAN_COUNT = 2;
+    private static final int FIXED_SPAN_COUNT = 8;
     private static final int MAIN_SPAN_COUNT = 6;
 
     private PictoViewModel fixedPictosViewModel;
@@ -75,7 +84,7 @@ public class DashboardFragment extends Fragment {
         fixedPictosRecyclerView.setAdapter(fixedPictoAdapter);
         // Let's connect with the data
         fixedPictosViewModel = new ViewModelProvider(this).get(PictoViewModel.class);
-        fixedPictosViewModel.getAllPictos().observe(this, pictos -> {
+        fixedPictosViewModel.getAllPictos().observe(this.getViewLifecycleOwner(), pictos -> {
             // Update the cached copy of the words in the adapter.
             fixedPictoAdapter.submitList(pictos);
         });
@@ -88,15 +97,52 @@ public class DashboardFragment extends Fragment {
         PictoRecyclerViewAdapter mainPictoAdapter = new PictoRecyclerViewAdapter(new PictoRecyclerViewAdapter.PictoDiff());
         mainPictosRecyclerView.setAdapter(mainPictoAdapter);
         // Let's connect with the data
-        mainPictosViewModel = new ViewModelProvider(this).get(PictoViewModel.class);
-        mainPictosViewModel.getAllPictos().observe(this, pictos -> {
-            // Update the cached copy of the words in the adapter.
-            mainPictoAdapter.submitList(pictos);
+        this.mainPictosViewModel = new ViewModelProvider(this).get(PictoViewModel.class);
+
+        this.mainPictosViewModel.currentCategoryPictos.observe(getViewLifecycleOwner(), pictos -> {
+            if (pictos != null) {
+                mainPictoAdapter.submitList(pictos);
+                Log.println(Log.INFO, "MyDebug", "DashboardFragment: observe()");
+            }
         });
+
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mainPictoAdapter.notifyDataSetChanged();
+                Log.println(Log.INFO, "MyDebug", "DashboardFragment: mainPictoAdapter.getItemCount(): " + mainPictoAdapter.getItemCount());
+                Log.println(Log.INFO, "MyDebug", "...after 10 seconds...");
+                mainPictosViewModel.setCategory(Integer.toUnsignedLong(20));
+                //Picto p = new Picto("5.png","0 in DB");
+                //mainPictosViewModel.insert(p);
+                //mainPictosViewModel.delete(5);
+
+                //mainPictoAdapter.notifyItemRemoved(3);
+                //mainPictoAdapter.notifyDataSetChanged();
+            }
+        }, 10000);
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.println(Log.INFO, "MyDebug", "DashboardFragment: mainPictoAdapter.getItemCount(): " + mainPictoAdapter.getItemCount());
+                Log.println(Log.INFO, "MyDebug", "...after 15 seconds...");
+                mainPictosViewModel.setCategory(Integer.toUnsignedLong(74));
+                //mainPictosViewModel.delete(196);
+                //mainPictosViewModel.delete(3);
+                //mainPictosViewModel.setCategory(Integer.toUnsignedLong(20));
+                //mainPictoAdapter.notifyDataSetChanged();
+            }
+        }, 15000);
 
         return rootView;
     }
 
+    static public void readText(String toSpeak, Context context) {
+        //Toast.makeText(context, toSpeak, Toast.LENGTH_SHORT).show();
+        textToSpeechEngine.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+    }
     static public void readPicto(View v) {
         TextView tv = (TextView) v;
         String toSpeak = tv.getText().toString();

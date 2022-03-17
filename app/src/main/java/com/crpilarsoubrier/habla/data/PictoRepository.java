@@ -1,10 +1,13 @@
 package com.crpilarsoubrier.habla.data;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
+
 
 class PictoRepository {
 
@@ -23,6 +26,10 @@ class PictoRepository {
         return allPictos;
     }
 
+    LiveData<List<Picto>> getPictosByCategory(Long category) {
+        return pictoDao.getPictosByParentId(category);
+    }
+
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
     void insert(Picto picto) {
@@ -30,4 +37,9 @@ class PictoRepository {
             pictoDao.insert(picto);
         });
     }
-}
+
+    void delete(Long pictoId) {
+        PictoRoomDatabase.databaseWriteExecutor.execute(() -> {
+            pictoDao.delete(pictoId);
+        });
+    }}

@@ -23,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 public class PictoRecyclerViewAdapter extends ListAdapter<Picto, PictoViewHolder> {
 
     private static final String TAG = "PictoRecyclerViewAdapter";
+
     //private String[] mDataSet; // The pictos and their text
 
     // BEGIN_INCLUDE(recyclerViewSampleViewHolder)
@@ -84,4 +85,5 @@ public class PictoRecyclerViewAdapter extends ListAdapter<Picto, PictoViewHolder
             return oldItem.getText().equals(newItem.getText()) && oldItem.getPicFilePath().equals(newItem.getPicFilePath()) ;
         }
     }
+
 }
