@@ -13,11 +13,13 @@ class PictoRepository {
 
     private PictoDao pictoDao;
     private LiveData<List<Picto>> allPictos;
+    private LiveData<List<PictoWithChildren>> allPictosWithChildren;
 
     PictoRepository(Application application) {
         PictoRoomDatabase db = PictoRoomDatabase.getDatabase(application);
         pictoDao = db.pictoDao();
         allPictos = pictoDao.getAll();
+        allPictosWithChildren = pictoDao.getPictosWithChildren();
     }
 
     // Room executes all queries on a separate thread.
@@ -26,8 +28,17 @@ class PictoRepository {
         return allPictos;
     }
 
+    LiveData<List<PictoWithChildren>> getAllPictosWithChildren() {
+        return allPictosWithChildren;
+    }
+
+
     LiveData<List<Picto>> getPictosByCategory(Long category) {
         return pictoDao.getPictosByParentId(category);
+    }
+
+    LiveData<List<PictoWithChildren>> getPictosByCategoryWithChildren(Long category) {
+        return pictoDao.getPictosByParentIdWithChildren(category);
     }
 
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
@@ -42,4 +53,5 @@ class PictoRepository {
         PictoRoomDatabase.databaseWriteExecutor.execute(() -> {
             pictoDao.delete(pictoId);
         });
-    }}
+    }
+}

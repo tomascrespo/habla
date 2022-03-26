@@ -14,55 +14,41 @@ import android.widget.TextView;
 
 import com.crpilarsoubrier.habla.R;
 import com.crpilarsoubrier.habla.data.Picto;
+import com.crpilarsoubrier.habla.data.PictoViewModel;
+import com.crpilarsoubrier.habla.data.PictoWithChildren;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Provide views to RecyclerView with data from mDataSet.
  */
-public class PictoRecyclerViewAdapter extends ListAdapter<Picto, PictoViewHolder> {
+public class PictoRecyclerViewAdapter extends ListAdapter<PictoWithChildren, PictoViewHolder> {
 
     private static final String TAG = "PictoRecyclerViewAdapter";
+    private PictoViewModel pictoViewModel; // Not in use currently
+    private View.OnClickListener mOnPictoClickListener;
 
-    //private String[] mDataSet; // The pictos and their text
-
-    // BEGIN_INCLUDE(recyclerViewSampleViewHolder)
-    /**
-     * Provide a reference to the type of views that you are using (custom ViewHolder)
-     */
-    /* // I have a specific viewholder in PictoViewHolder class
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
-
-        public ViewHolder(View v) {
-            super(v);
-            // Define click listener for the ViewHolder's View.
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Pictograma en posición " + getAdapterPosition() + " pulsado", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
-            textView = (TextView) v.findViewById(R.id.picto_text);
-        }
-
-        public TextView getTextView() {
-            return textView;
-        }
-    }
-    // END_INCLUDE(recyclerViewSampleViewHolder)
-    */
     /**
      */
-    public PictoRecyclerViewAdapter(@NonNull DiffUtil.ItemCallback<Picto> diffCallback) {
+    public PictoRecyclerViewAdapter(@NonNull DiffUtil.ItemCallback<PictoWithChildren> diffCallback) {
         super(diffCallback);
+    }
+
+    /**
+     * Allows assign a function that resides in DashboardFragment
+     * @param pictoClickListener
+     */
+    public void setOnItemClickListener(View.OnClickListener pictoClickListener) {
+        mOnPictoClickListener = pictoClickListener;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
     public PictoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return PictoViewHolder.create(parent);
+        return PictoViewHolder.create(parent, mOnPictoClickListener);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -71,19 +57,48 @@ public class PictoRecyclerViewAdapter extends ListAdapter<Picto, PictoViewHolder
         //Log.d(TAG, "Element " + position + " set.");
         viewHolder.bind(getItem(position), viewHolder.itemView.getContext());
     }
-    // END_INCLUDE(recyclerViewOnBindViewHolder)
 
-    static class PictoDiff extends DiffUtil.ItemCallback<Picto> {
+    /**
+     * We will hack this method to add a new picto (go back picto)
+     * that does not exists in the real view model
+     * @param list
+     */
+    @Override
+    public void submitList(List<PictoWithChildren> list) {
+        // We should check if we need to add a go back picto or not
+        // We will do it checking if the first picto of the list is in a category or not
+        if (list != null){
+            PictoWithChildren picto = list.get(0);
+            if( (picto != null) && !picto.isCategory()) {
+                PictoWithChildren backPicto = new PictoWithChildren();
+                backPicto.picto = new Picto("-1000.png", "VOLVER");
+                backPicto.picto.setId(-1000);
+                backPicto.children = new ArrayList<>();
+                list.add(0, backPicto);
+            }
+        }
+        super.submitList(list);
 
+    }
+
+    // Sets the on click listener
+    public void setOnPictoClickListener(View.OnClickListener pictoClickListener) {
+        mOnPictoClickListener = pictoClickListener;
+    }
+
+    /**
+     * PictoDiff, allowing compare two pictos to create beautiful animations when
+     * add or remove a picto
+     */
+    static class PictoDiff extends DiffUtil.ItemCallback<PictoWithChildren> {
         @Override
-        public boolean areItemsTheSame(@NonNull Picto oldItem, @NonNull Picto newItem) {
+        public boolean areItemsTheSame(@NonNull PictoWithChildren oldItem, @NonNull PictoWithChildren newItem) {
             return oldItem == newItem;
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull Picto oldItem, @NonNull Picto newItem) {
-            return oldItem.getText().equals(newItem.getText()) && oldItem.getPicFilePath().equals(newItem.getPicFilePath()) ;
+        public boolean areContentsTheSame(@NonNull PictoWithChildren oldItem, @NonNull PictoWithChildren newItem) {
+            return oldItem.picto.getText().equals(newItem.picto.getText()) && oldItem.picto.getPicFilePath().equals(newItem.picto.getPicFilePath()) ;
         }
     }
-
 }

@@ -29,6 +29,7 @@ public abstract class PictoRoomDatabase extends RoomDatabase{
     private static final String ALBUM_NAME = "Habla";
     private static final String ASSETS_BUILTIN_DATA_DIRECTORY = "pictos";
     private static final String GENERIC_CATEGORY_IMAGE_FILENAME = "generico.png";
+    private static final String GO_BACK_IMAGE_FILENAME = "volver.png";
     private static final Long MAIN_CATEGORY_ID = null;
     private static volatile PictoRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
@@ -79,6 +80,7 @@ public abstract class PictoRoomDatabase extends RoomDatabase{
 
             // Copy every file in the specified directory recursively
             loadBuiltinPictos(ASSETS_BUILTIN_DATA_DIRECTORY, externalFileDir, MAIN_CATEGORY_ID , context, dao);
+
 
         });
     }
@@ -156,6 +158,29 @@ public abstract class PictoRoomDatabase extends RoomDatabase{
                 loadBuiltinPictos(assetDirectory + "/" + filename, targetDirectory, picto.getId(), context, dao);
             }
         }
+
+        // Finally we copy the file that will be used in the GO BACK picto
+        // To allow coming back when the user is in a specific category and want go to the main category
+        String inFilename = GO_BACK_IMAGE_FILENAME;
+        InputStream in = null;
+        OutputStream out = null;
+        String internalFilename = "-1000.png";
+        try {
+            // Let's copy
+            File outFile = new File(targetDirectory, internalFilename);
+            Log.println(Log.INFO, "populateDatabase", "Let's copy GO_BACK from " + inFilename + " to " + outFile);
+            in = assetManager.open(inFilename);
+            out = new FileOutputStream(outFile);
+            copyFile(in, out);
+            in.close();
+            in = null;
+            out.flush();
+            out.close();
+            out = null;
+        } catch (IOException e) {
+            Log.e("populateDatabase", "Failed to copy GO_BACK asset file: " + inFilename, e);
+        }
+
 
     }
 

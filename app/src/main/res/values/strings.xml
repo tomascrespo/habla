@@ -11,4 +11,19 @@
     <string name="phrase_mode">Creación de frases</string>
     <string name="grid_narrower">-</string>
     <string name="grid_wider">+</string>
+
+    <string-array name="category_colors">
+        <item>#f3b1cd</item>
+        <item>#f8d7e8</item>
+        <item>#bad5f0</item>
+        <item>#d6eff6</item>
+        <item>#f8efe6</item>
+        <item>#fae4cd</item>
+        <item>#f0d5ba</item>
+        <item>#e3a7c0</item>
+        <item>#b0abcb</item>
+        <item>#c2d5a8</item>
+        <item>#f3eacd</item>
+        <item>#a5d5d5</item>
+    </string-array>
 </resources>

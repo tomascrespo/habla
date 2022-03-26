@@ -16,7 +16,6 @@
         android:outlineAmbientShadowColor="@color/black"
         android:outlineSpotShadowColor="@color/black"
         app:cardUseCompatPadding="true"
-        android:onClick="openBrowser"
         app:cardElevation="4dp"
         android:layout_height="wrap_content">
 
@@ -33,20 +32,27 @@
                 android:scaleType="centerInside"
                 android:adjustViewBounds="true"
                 android:layout_gravity="center_horizontal"
-                android:background="@android:color/white"
+                android:background="@android:color/transparent"
                 style="@style/CardView"
                 />
 
             <TextView
                 android:id="@+id/picto_text"
-                android:layout_height="match_parent"
+                android:layout_height="20dp"
                 android:layout_width="match_parent"
+
                 android:layout_marginTop="5dp"
-                android:layout_marginHorizontal="11dp"
-                android:paddingHorizontal="8dp"
-                android:layout_marginBottom="7dp"
-                android:textFontWeight="350"
-                android:background="@android:color/background_light" />
+                android:layout_marginBottom="2dp"
+                android:layout_marginHorizontal="2dp"
+                android:paddingHorizontal="1dp"
+
+                android:textAlignment="center"
+                android:background="@android:color/transparent"
+
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="2sp"
+                android:autoSizeMaxTextSize="100sp"
+                android:autoSizeStepGranularity="2sp" />
 
 
         </LinearLayout>

@@ -16,7 +16,9 @@ public class PictoViewModel extends AndroidViewModel {
 
     private PictoRepository pictoRepository;
     private LiveData<List<Picto>> allPictos;
-    public LiveData<List<Picto>> currentCategoryPictos;
+    private LiveData<List<PictoWithChildren>> allPictosWithChildren;
+    //public LiveData<List<Picto>> currentCategoryPictos;
+    public LiveData<List<PictoWithChildren>> currentCategoryPictosWithChildren;
     private static Long MAIN_CATEGORY = null;
     private MutableLiveData<Long> currentCategory = new MutableLiveData<>(MAIN_CATEGORY);
 
@@ -24,11 +26,18 @@ public class PictoViewModel extends AndroidViewModel {
         super(application);
         pictoRepository = new PictoRepository(application);
         allPictos = pictoRepository.getAllPictos();
-        currentCategoryPictos = Transformations.switchMap(currentCategory, filter ->
+        allPictosWithChildren = pictoRepository.getAllPictosWithChildren();
+/*
+        currentCategoryPictos = Transformations.switchMap(currentCategory, (filter) ->
                 pictoRepository.getPictosByCategory(filter)); // When currentCategory changes, transformation is applied and currentCategoryPictos are updated
+*/
+        currentCategoryPictosWithChildren = Transformations.switchMap(currentCategory, filter ->
+            pictoRepository.getPictosByCategoryWithChildren(filter)); // When currentCategory changes, transformation is applied and currentCategoryPictos are updated
     }
 
     public LiveData<List<Picto>> getAllPictos() { return allPictos; }
+
+    public LiveData<List<PictoWithChildren>> getAllPictosWithChildren() { return allPictosWithChildren; }
 
     public void setCategory(Long category) {
         this.currentCategory.postValue(category);
@@ -41,4 +50,5 @@ public class PictoViewModel extends AndroidViewModel {
     public void delete(long pictoId){
         pictoRepository.delete(pictoId);
     }
+
 }

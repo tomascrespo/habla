@@ -6,7 +6,6 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
-import androidx.annotation.NonNull;
 
 // @todo Why you use Long instead of long for parentId if never use the null value?
 @Entity(tableName = "picto",
@@ -22,18 +21,22 @@ public class Picto {
     public String audioFilePath = null;
     public boolean shouldBeRead = true;
 
+    //@Relation(parentColumn = "picto_id", entityColumn = "parent_picto_id")
+    //private List<Picto> children = new ArrayList<>();
+
     public Picto(String picFilePath, String text) {
         this.picFilePath = picFilePath;
         this.text = text;
     }
 
     public long getId() { return pictoId; }
+    public void setId(long pictoId) { this.pictoId = pictoId; }
 
     public long getParentId() { return parentId; }
 
-    public void setParentId(Long parentId) { this.parentId = parentId; }
-
-    public void setId(long id) { this.pictoId = id; }
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
 
     public String getPicFilePath() {
         return picFilePath;
@@ -67,6 +70,11 @@ public class Picto {
         return !(this.parentId == null);
     }
 
+    /**
+     * Some pictos acts as categories, and in some cases when you select one of these
+     * it has not to be read
+     * @return
+     */
     public boolean shouldBeRead() { return this.shouldBeRead; }
 
     @Override
