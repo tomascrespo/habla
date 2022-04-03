@@ -7,7 +7,6 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-// @todo Why you use Long instead of long for parentId if never use the null value?
 @Entity(tableName = "picto",
         foreignKeys = {@ForeignKey(entity = Picto.class, parentColumns = {"picto_id"}, childColumns = {"parent_picto_id"})},
         indices = {@Index("parent_picto_id")})
@@ -15,10 +14,15 @@ public class Picto {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "picto_id") public long pictoId;
+
     @ColumnInfo(name = "parent_picto_id") public Long parentId = null; // Long allows null values (vs long which does not allow it)
+
     public String picFilePath;
+
     public String text;
+
     public String audioFilePath = null;
+
     public boolean shouldBeRead = true;
 
     //@Relation(parentColumn = "picto_id", entityColumn = "parent_picto_id")

@@ -13,6 +13,11 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.crpilarsoubrier.habla.data.dashboard.Dashboard;
+import com.crpilarsoubrier.habla.data.dashboard.DashboardDao;
+import com.crpilarsoubrier.habla.data.dashboard.PictoInDashboardDao;
+import com.crpilarsoubrier.habla.data.dashboard.PictoInDashboardEntity;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,27 +27,29 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Picto.class}, version = 1, exportSchema = false)
-public abstract class PictoRoomDatabase extends RoomDatabase{
+@Database(entities = {Picto.class, Dashboard.class, PictoInDashboardEntity.class}, version = 1, exportSchema = false)
+public abstract class AppDatabase extends RoomDatabase{
 
     public abstract PictoDao pictoDao();
+    public abstract PictoInDashboardDao pictoInDashboardDao();
+    public abstract DashboardDao dashboardDao();
     private static final String ALBUM_NAME = "Habla";
     private static final String ASSETS_BUILTIN_DATA_DIRECTORY = "pictos";
     private static final String GENERIC_CATEGORY_IMAGE_FILENAME = "generico.png";
     private static final String GO_BACK_IMAGE_FILENAME = "volver.png";
     private static final Long MAIN_CATEGORY_ID = null;
-    private static volatile PictoRoomDatabase INSTANCE;
+    private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
 
     static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    static PictoRoomDatabase getDatabase(final Context context) {
+    public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
-            synchronized (PictoRoomDatabase.class) {
+            synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            PictoRoomDatabase.class, "picto_database")
+                            AppDatabase.class, "picto_database")
                             //.addCallback(sRoomDatabaseCallback) // Through a function
                             .addCallback(new RoomDatabase.Callback()  { // Inline callback to allow using context
                                 @Override
@@ -71,17 +78,17 @@ public abstract class PictoRoomDatabase extends RoomDatabase{
 
         databaseWriteExecutor.execute(() -> {
             // Populate the database in the background.
-            // If you want to start with more words, just add them.
-            PictoDao dao = INSTANCE.pictoDao();
-            dao.deleteAll();
+            PictoDao pictoDao = INSTANCE.pictoDao();
+            pictoDao.deleteAll();
 
             File externalFileDir = getAppSpecificAlbumStorageDir(context, ALBUM_NAME);
             Log.println(Log.INFO, "populateDatabase", "externalFileDir: " + externalFileDir.toString());
 
             // Copy every file in the specified directory recursively
-            loadBuiltinPictos(ASSETS_BUILTIN_DATA_DIRECTORY, externalFileDir, MAIN_CATEGORY_ID , context, dao);
+            loadBuiltinPictos(ASSETS_BUILTIN_DATA_DIRECTORY, externalFileDir, MAIN_CATEGORY_ID , context, pictoDao);
 
-
+            DashboardDao dashboardDao = INSTANCE.dashboardDao();
+            loadSampleDashboards(dashboardDao);
         });
     }
 
@@ -214,6 +221,40 @@ public abstract class PictoRoomDatabase extends RoomDatabase{
         return file;
     }
 
+    /**
+     * Some sample dashboards
+     */
+    private static void loadSampleDashboards(DashboardDao dashboardDao) {
+        Dashboard dashboard = new Dashboard( "Asamblea", true, true, 1, 1);
+        long dashboardId = dashboardDao.insert(dashboard);
 
+        PictoInDashboardDao pictoInDashboardDao = INSTANCE.pictoInDashboardDao();
+        PictoInDashboardEntity pictoInDashboardEntity = new PictoInDashboardEntity(dashboardId, 1, true, 0);
+        pictoInDashboardDao.insert(pictoInDashboardEntity);
+        pictoInDashboardEntity = new PictoInDashboardEntity(dashboardId, 2, true, 0);
+        pictoInDashboardDao.insert(pictoInDashboardEntity);
+        pictoInDashboardEntity = new PictoInDashboardEntity(dashboardId, 3, true, 0);
+        pictoInDashboardDao.insert(pictoInDashboardEntity);
+        pictoInDashboardEntity = new PictoInDashboardEntity(dashboardId, 4, true, 0);
+        pictoInDashboardDao.insert(pictoInDashboardEntity);
+        pictoInDashboardEntity = new PictoInDashboardEntity(dashboardId, 5, true, 1);
+        pictoInDashboardDao.insert(pictoInDashboardEntity);
+        pictoInDashboardEntity = new PictoInDashboardEntity(dashboardId, 6, true, 1);
+        pictoInDashboardDao.insert(pictoInDashboardEntity);
 
+        dashboard = new Dashboard( "Paz", true, true, 1, 1);
+        dashboardId = dashboardDao.insert(dashboard);
+        pictoInDashboardEntity = new PictoInDashboardEntity(dashboardId, 7, true, 0);
+        pictoInDashboardDao.insert(pictoInDashboardEntity);
+        pictoInDashboardEntity = new PictoInDashboardEntity(dashboardId, 8, true, 0);
+        pictoInDashboardDao.insert(pictoInDashboardEntity);
+        pictoInDashboardEntity = new PictoInDashboardEntity(dashboardId, 9, true, 0);
+        pictoInDashboardDao.insert(pictoInDashboardEntity);
+        pictoInDashboardEntity = new PictoInDashboardEntity(dashboardId, 10, true, 0);
+        pictoInDashboardDao.insert(pictoInDashboardEntity);
+        pictoInDashboardEntity = new PictoInDashboardEntity(dashboardId, 11, true, 1);
+        pictoInDashboardDao.insert(pictoInDashboardEntity);
+
+    }
 }
+

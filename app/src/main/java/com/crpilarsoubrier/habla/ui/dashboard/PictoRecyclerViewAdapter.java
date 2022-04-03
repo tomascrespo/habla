@@ -6,17 +6,13 @@ package com.crpilarsoubrier.habla.ui.dashboard;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
+
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.crpilarsoubrier.habla.R;
 import com.crpilarsoubrier.habla.data.Picto;
-import com.crpilarsoubrier.habla.data.PictoViewModel;
+import com.crpilarsoubrier.habla.view_models.PictoViewModel;
 import com.crpilarsoubrier.habla.data.PictoWithChildren;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +63,7 @@ public class PictoRecyclerViewAdapter extends ListAdapter<PictoWithChildren, Pic
     public void submitList(List<PictoWithChildren> list) {
         // We should check if we need to add a go back picto or not
         // We will do it checking if the first picto of the list is in a category or not
-        if (list != null){
+        if ((list != null) && (!list.isEmpty())){
             PictoWithChildren picto = list.get(0);
             if( (picto != null) && !picto.isCategory()) {
                 PictoWithChildren backPicto = new PictoWithChildren();

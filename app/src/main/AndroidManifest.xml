@@ -12,6 +12,7 @@
         <activity
             android:name="com.crpilarsoubrier.habla.MainActivity"
             android:label="@string/app_name"
+            android:exported="true"
             android:theme="@style/Theme.P2v.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

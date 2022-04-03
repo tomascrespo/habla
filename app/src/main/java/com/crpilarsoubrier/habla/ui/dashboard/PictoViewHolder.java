@@ -15,8 +15,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.crpilarsoubrier.habla.R;
-import com.crpilarsoubrier.habla.data.Picto;
-import com.crpilarsoubrier.habla.data.PictoViewModel;
 import com.crpilarsoubrier.habla.data.PictoWithChildren;
 
 import java.io.File;

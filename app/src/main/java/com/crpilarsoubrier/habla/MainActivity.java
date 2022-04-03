@@ -1,12 +1,9 @@
 package com.crpilarsoubrier.habla;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.view.Menu;
 
-import com.crpilarsoubrier.habla.data.PictoRoomDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;

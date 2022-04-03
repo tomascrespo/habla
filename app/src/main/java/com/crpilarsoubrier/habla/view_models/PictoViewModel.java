@@ -1,4 +1,4 @@
-package com.crpilarsoubrier.habla.data;
+package com.crpilarsoubrier.habla.view_models;
 
 import android.app.Application;
 import android.util.Log;
@@ -8,6 +8,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.crpilarsoubrier.habla.data.Picto;
+import com.crpilarsoubrier.habla.data.PictoRepository;
+import com.crpilarsoubrier.habla.data.PictoWithChildren;
 import com.crpilarsoubrier.habla.ui.dashboard.PictoRecyclerViewAdapter;
 
 import java.util.List;

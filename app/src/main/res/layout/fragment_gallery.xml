@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_constraint_layout"
-    tools:context=".ui.dashboard.DashboardFragment">
+    tools:context=".ui.dashboard.DashboardPlayFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fixed_pictos_recycler_view"

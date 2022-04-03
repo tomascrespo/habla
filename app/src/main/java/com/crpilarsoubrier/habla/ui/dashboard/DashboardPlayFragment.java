@@ -1,6 +1,5 @@
 package com.crpilarsoubrier.habla.ui.dashboard;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,32 +8,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.crpilarsoubrier.habla.R;
-import com.crpilarsoubrier.habla.data.Picto;
-import com.crpilarsoubrier.habla.data.PictoViewModel;
+import com.crpilarsoubrier.habla.data.dashboard.Dashboard;
+import com.crpilarsoubrier.habla.view_models.PictoViewModel;
 import com.crpilarsoubrier.habla.data.PictoWithChildren;
+import com.crpilarsoubrier.habla.view_models.DashboardListViewModel;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class DashboardFragment extends Fragment {
+public class DashboardPlayFragment extends Fragment {
 
 
-    private static final String TAG = "DashboardFragment";
+    private static final String TAG = "DashboardPlayFragment";
     //private GalleryViewModel galleryViewModel;
     //protected RecyclerView mPictoRecyclerView;
     //protected PictoRecyclerViewAdapter mPictoAdapter;
@@ -61,19 +55,54 @@ public class DashboardFragment extends Fragment {
                 }
             }
         });
+
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_gallery, container, false);
+
         rootView.setTag(TAG);
+
+        // Get the arg that decides what dashboard we will play with
+//        long dashboardId = PlantDetailFragmentArgs.fromBundle(getArguments()).getPlantId();
+//        setupViewModel(plantId);
 
         // Fixed Pictos
         RecyclerView fixedPictosRecyclerView = (RecyclerView) rootView.findViewById(R.id.fixed_pictos_recycler_view);
         RecyclerView.LayoutManager fixedLayoutManager = new LinearLayoutPagerManager(getActivity(), RecyclerView.HORIZONTAL, false,FIXED_SPAN_COUNT);
         fixedPictosRecyclerView.setLayoutManager(fixedLayoutManager);
+
         // Let's connect with the data
         fixedPictosViewModel = new ViewModelProvider(this).get(PictoViewModel.class);
+
+        // Test dashboards
+        DashboardListViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardListViewModel.class);
+        /*
+        List<Dashboard> dashboardList = new ArrayList<>();
+        dashboardList = dashboardViewModel.allDashboards.getValue();
+        if ((dashboardList != null) && (!dashboardList.isEmpty())) {
+            for (Dashboard d : dashboardViewModel.allDashboards.getValue()) {
+                Log.println(Log.INFO, "MyDebug", "allDashboards: " + d.dashboardId + " - " + d.dashboardName);
+            }
+        } else Log.println(Log.INFO, "MyDebug", "allDashboards is null");
+*/
+
+/*
+        Dashboard dashboard = new Dashboard(1,"Asamblea");
+        dashboardViewModel.addDashboard(dashboard);
+        //dashboardViewModel.addDashboard("Asamblea", true, true, 4, 5);
+
+        DashboardRepository dashboardRepository = new DashboardRepository(getActivity().getApplication());
+        DashboardDetailViewModelFactory dashboardDetailViewModelFactory = new DashboardDetailViewModelFactory(dashboardRepository, dashboard.dashboardId);
+        DashboardDetailViewModel dashboardDetailViewModel = ViewModelProviders.of(this, (ViewModelProvider.Factory) dashboardDetailViewModelFactory).get(DashboardDetailViewModel.class);
+
+        dashboardDetailViewModel.addPictoToDashboard(1, true,  PictoInDashboardEntity.MAIN_PICTO);
+        dashboardDetailViewModel.addPictoToDashboard(2, true,  PictoInDashboardEntity.MAIN_PICTO);
+        dashboardDetailViewModel.addPictoToDashboard(3, true,  PictoInDashboardEntity.MAIN_PICTO);
+        dashboardDetailViewModel.addPictoToDashboard(4, true,  PictoInDashboardEntity.MAIN_PICTO);
+        dashboardDetailViewModel.addPictoToDashboard(5, true,  PictoInDashboardEntity.MAIN_PICTO);
+*/
 
         PictoRecyclerViewAdapter fixedPictoAdapter = new PictoRecyclerViewAdapter(new PictoRecyclerViewAdapter.PictoDiff());
         fixedPictosRecyclerView.setAdapter(fixedPictoAdapter);
@@ -98,13 +127,26 @@ public class DashboardFragment extends Fragment {
         mainPictoAdapter.setOnPictoClickListener(onPictoClickListener);
         //mainPictosViewModel.setCategory(Integer.toUnsignedLong(1));
 
+        dashboardViewModel.allDashboards.observe(getViewLifecycleOwner(), dashboards -> {
+            Log.println(Log.INFO, "MyDebug", "allDashboards.observe()");
+            if (dashboards != null) {
+                for (Dashboard d : dashboards) {
+                    Log.println(Log.INFO, "MyDebug", "allDashboards: " + d.dashboardId + " - " + d.dashboardName);
+                }
+            } else Log.println(Log.INFO, "MyDebug", "allDashboards.observe(): allDashboards is null");
+            //dashboardViewModel.addDashboard("Probando", true, true, 4, 4);
+        });
+
         this.mainPictosViewModel.currentCategoryPictosWithChildren.observe(getViewLifecycleOwner(), pictos -> {
             if (pictos != null) {
                 mainPictoAdapter.submitList(pictos);
-                Log.println(Log.INFO, "MyDebug", "DashboardFragment: observe()");
+                //Log.println(Log.INFO, "MyDebug", "currentCategoryPictosWithChildren.observe()");
+                //dashboardViewModel.addDashboard("Probando", true, true, 4, 4);
+                Log.println(Log.INFO, "MyDebug", "allDashboards.size(): " + dashboardViewModel.allDashboards.getValue().size());
+
             }
         });
-
+/*
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
@@ -121,7 +163,7 @@ public class DashboardFragment extends Fragment {
                 //mainPictoAdapter.notifyDataSetChanged();
             }
         }, 8000);
-
+*/
 
         return rootView;
     }
